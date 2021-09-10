@@ -1,0 +1,16 @@
+package scheduler
+
+import "test-spider/engine"
+
+type Scheduler interface {
+	Submit(engine.Request)
+	configureWorkChan(chan engine.Request)
+}
+
+type ConcurrentEngine struct {
+	Scheduler Scheduler
+	WorkCount int
+}
+type SimpleScheduler struct {
+	workerChan chan engine.Request
+}

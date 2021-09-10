@@ -1,0 +1,44 @@
+package scheduler
+
+import "test-spider/engine"
+
+type QueueScheduler struct {
+	requestChan chan engine.Request
+	workerChan  chan chan engine.Request
+}
+
+func (q *QueueScheduler) Submit(request engine.Request) {
+	q.requestChan < request
+}
+func (q *QueueScheduler) configureWorkChan(chan engine.Request) {
+	panic("ddd")
+}
+func (q *QueueScheduler) WorkReady(w chan engine.Request) {
+
+}
+func (q *QueueScheduler) Run() {
+	var requestQ []engine.Request   //任务队列
+	var workQ []chan engine.Request //个人队列
+	go func() {
+		for {
+			var acticveRequest engine.Request  //
+			var acticeWork chan engine.Request //
+			if len(requestQ) > 0 && len(workQ) > 0 {
+				acticveRequest = requestQ[0]
+				acticeWork = workQ[0]
+			}
+			select {
+			case q := <-q.requestChan:
+				requestQ = append(requestQ, q)
+
+			case w:=<-q.workerChan
+				workQ=append(workQ,w)
+			case acticeWork<-acticveRequest:
+				workQ=workQ[1:]
+				requestQ=requestQ[1:]
+
+
+			}
+		}
+	}()
+}

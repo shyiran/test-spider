@@ -1,0 +1,53 @@
+package fetcher
+
+import (
+	"bufio"
+	"fmt"
+	"golang.org/x/net/html/charset"
+	"golang.org/x/text/encoding"
+	"golang.org/x/text/encoding/unicode"
+	"golang.org/x/text/transform"
+	"io/ioutil"
+	"log"
+	"net/http"
+)
+
+func DeterminEncodeing(r *bufio.Reader) encoding.Encoding {
+	bytes, err := r.Peek(1024)
+	if err != nil {
+		log.Printf("获取失败:%v", err)
+		return unicode.UTF8
+	}
+	re, _, _ := charset.DetermineEncoding(bytes, "")
+	return re
+}
+
+//
+/*func ParseContent(content []byte) engine.ParseResult{
+	//re := regexp.MustCompile(`<a href="([^"]+)" class="tag">([^"]+)</a>`)
+	//<a href="https://so.gushiwen.cn/gushi/sanbai.aspx" target="_blank">古诗三百</a>
+	re := regexp.MustCompile(`<a href="([^"]+)" target="_blank">([^"]+)</a>`)
+
+	match := re.FindAllSubmatch(content, -1)
+	fmt.Println(match)
+	for _, v := range match {
+		fmt.Println("dddddddddddddd")
+		fmt.Printf("v[0]:%s v[1]:%s,v[2]:%s\n", v[0], v[1], v[2])
+	}
+	return ioutil.ReadAll(utv)
+}*/
+//模拟浏览器访问
+func Fetch(url string,)([]byte,error){
+	client:=&http.Client{}
+	req,err:=http.NewRequest("GET",url,nil)
+	if err != nil {
+		return nil, fmt.Errorf("ERROR:get url:%s",url)
+	}
+	req.Header.Set("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0")
+	resp,err:=client.Do(req)
+	bodyReader:=bufio.NewReader(resp.Body)
+	e:=DeterminEncodeing(bodyReader)
+	utf8RReader:=transform.NewReader(bodyReader,e.NewDecoder())
+	return ioutil.ReadAll(utf8RReader)
+}
+

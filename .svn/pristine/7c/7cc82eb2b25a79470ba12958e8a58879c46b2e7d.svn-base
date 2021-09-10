@@ -1,0 +1,22 @@
+package parse
+
+import (
+	"regexp"
+	"test-spider/engine"
+)
+
+const BookListRe = `<a.*?href="([^"]+)" title="([^"]+)"`
+
+func ParseBookList(contents []byte) engine.ParseResult {
+	re := regexp.MustCompile(BookListRe)
+	matches := re.FindAllSubmatch(contents, -1)
+	result := engine.ParseResult{}
+	for _, m := range matches {
+		result.Items = append(result.Items, string(m[2]))
+		result.Requesrts = append(result.Requesrts, engine.Request{
+			Url:       string(m[1]),
+			ParseFunc: ParsebookDetail,
+		})
+	}
+	return result
+}

@@ -1,0 +1,16 @@
+package engine
+
+type ConcurrentEngine struct {
+	WorkCount int
+}
+
+func (e *ConcurrentEngine) Run(send ...Request) {
+	in := make(chan Request)
+	out := make(chan ParseResult)
+	for i := 0; i < e.WorkCount; i++ {
+		CreateWork(in, out)
+	}
+}
+func CreateWork(in chan Request, out chan ParseResult) {
+
+}

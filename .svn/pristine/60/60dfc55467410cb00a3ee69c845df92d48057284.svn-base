@@ -1,0 +1,63 @@
+package parse
+
+import (
+	"regexp"
+	"test-spider/engine"
+	"test-spider/model"
+)
+
+//正则作者
+const author_reg = `<span class="pl"> 作者</span>:[\d\D]*?<a.*?>([^<])</a>`
+var authorRe = regexp.MustCompile(author_reg)
+
+//正则出版社
+const publicer_reg = `<span class="pl">出版社:</span>([^<]+)</br>`
+
+var publicerreg = regexp.MustCompile(publicer_reg)
+
+//页数
+const bookpages_reg = `<span class="pl">页数:</span> ([^<]+)</br>`
+
+var bookpagesReg = regexp.MustCompile(bookpages_reg)
+
+//价格
+const price_reg = `<span class="pl">定价:</span>([^<]+)</br>`
+
+var priceReg = regexp.MustCompile(price_reg)
+
+//得分
+const score_reg = `<strong class="ll rating_num " property="v:average">([^<]+)</strong>`
+
+var scoreReg = regexp.MustCompile(score_reg)
+
+//简介
+const into_reg = `<div class="intro">[\d\D]*?<p>([^<]+)</p><div>`
+
+var intoReg = regexp.MustCompile(into_reg)
+
+func ParsebookDetail(contents []byte) engine.ParseResult {
+	bookdetail := model.Bookdetail{}
+	//match := authorRe.FindAllSubmatch(contents, -1)
+	//作者
+	bookdetail.Author = ExtraString(contents, authorRe)
+	//页数
+	bookdetail.Bookpages = ExtraString(contents, bookpagesReg)
+	//出版社
+	bookdetail.Publicer = ExtraString(contents, publicerreg)
+	//得分
+	bookdetail.Score=ExtraString(contents,scoreReg)
+	//简介
+	bookdetail.Into=ExtraString(contents,intoReg)
+	result:=engine.ParseResult{
+		Items: []interface{}{bookdetail},
+	}
+	return result
+
+}
+func ExtraString(contents []byte, regexp2 *regexp.Regexp) string {
+	match := regexp2.FindSubmatch(contents)
+	if len(match) > 2 {
+
+	}
+	return "iiii"
+}

@@ -1,0 +1,27 @@
+package parse
+
+import (
+	"regexp"
+	"test-spider/engine"
+)
+
+const regexpStr = `<a href="([^"]+)" target="_blank">([^"]+)</a>`
+//
+func Parsetag(content []byte) engine.ParseResult{
+	//re := regexp.MustCompile(`<a href="([^"]+)" class="tag">([^"]+)</a>`)
+	//<a href="https://so.gushiwen.cn/gushi/sanbai.aspx" target="_blank">古诗三百</a>
+	re := regexp.MustCompile( regexpStr)
+	matches := re.FindAllSubmatch(content, -1)
+	result:=engine.ParseResult{}
+	//fmt.Println(match)
+	for _, v := range matches {
+		result.Items=append(result.Items,v[2])
+		result.Requesrts=append(result.Requesrts,engine.Request{
+			Url:"",
+			ParseFunc: engine.NilParse,
+		})
+		//fmt.Println("dddddddddddddd")
+		//fmt.Printf("v[0]:%s v[1]:%s,v[2]:%s\n", v[0], v[1], v[2])
+	}
+	return result
+}
