@@ -5,8 +5,9 @@ import (
 	"test-spider/fetcher"
 )
 
-func Run(seeds ...Request) {
-	var requests []Request
+
+func Run(seeds ...Request_q) {
+	var requests []Request_q
 	for _, e := range seeds {
 		requests = append(requests, e)
 	}
@@ -18,9 +19,9 @@ func Run(seeds ...Request) {
 		if err != nil {
 			log.Printf("Fetch Error: %s", r.Url)
 		}
-		parseresult := r.ParseFunc(body)
-		requests = append(requests, parseresult.Requesrts...)
-		for _, item := range parseresult.Items {
+		parseResult := r.ParseFunc(body)
+		requests = append(requests, parseResult.Requesrts...)
+		for _, item := range parseResult.Items {
 			log.Printf("Got item:%s", item)
 		}
 	}

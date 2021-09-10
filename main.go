@@ -11,7 +11,7 @@ func main() {
 		ParseFunc: parse.ParseBookList,
 	})
 	*/
-	engine.Run(engine.Request{
+	engine.Run(engine.Request_q{
 		Url:       "https://book.douban.com",
 		ParseFunc: parse.ParseTag,
 	})
